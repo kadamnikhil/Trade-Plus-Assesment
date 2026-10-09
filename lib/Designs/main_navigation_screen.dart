@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'holdings_screen.dart';
-import 'market_overview_screen.dart';
-import 'order_history_screen.dart';
-import 'watchlist_screen.dart';
+import 'package:marketupdates/Constant/colors.dart';
+import 'package:marketupdates/Screens/Holdings/holdings.dart';
+import 'package:marketupdates/Screens/Market/market.dart';
+import 'package:marketupdates/Screens/Orders/orders.dart';
+import 'package:marketupdates/Screens/Watchlist/watchlist.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -16,16 +17,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget page = const WatchlistScreen();
+    Widget page = const WatchlistPage();
 
     if (currentIndex == 1) {
-      page = const MarketOverviewScreen();
+      page = const MarketPage();
     }
     if (currentIndex == 2) {
-      page = const HoldingsScreen();
+      page = const HoldingsPage();
     }
     if (currentIndex == 3) {
-      page = const OrderHistoryScreen();
+      page = const OrdersPage();
     }
 
     return Scaffold(
@@ -33,6 +34,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
+        backgroundColor: AppColors.black,
+        selectedItemColor: AppColors.gold,
+        unselectedItemColor: AppColors.goldDim,
         onTap: (index) {
           setState(() {
             currentIndex = index;

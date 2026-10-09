@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const Text(
               'TRADE PLUS',
               style: TextStyle(
-                color: Colors.white,
+                color: Color(0xFFD4AF37),
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
