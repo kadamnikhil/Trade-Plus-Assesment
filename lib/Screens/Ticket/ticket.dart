@@ -7,8 +7,9 @@ import 'package:marketupdates/Services/portfolio.dart';
 
 class TicketPage extends StatefulWidget {
   final String symbol;
+  final String side;
 
-  const TicketPage({super.key, required this.symbol});
+  const TicketPage({super.key, required this.symbol, this.side = 'BUY'});
 
   @override
   State<TicketPage> createState() => _TicketPageState();
@@ -17,13 +18,14 @@ class TicketPage extends StatefulWidget {
 class _TicketPageState extends State<TicketPage> {
   final TextEditingController qtyController = TextEditingController();
   late ValueNotifier<StockQuote> quoteNotifier;
-  String side = 'BUY';
+  late String side;
   String error = '';
   bool placing = false;
 
   @override
   void initState() {
     super.initState();
+    side = widget.side;
     quoteNotifier = MarketFeed.instance.quoteOf(widget.symbol);
     quoteNotifier.addListener(onPriceChange);
     qtyController.addListener(onQtyChange);
@@ -232,36 +234,87 @@ class OrderDonePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int valuePaise = qty * pricePaise;
+    bool isBuy = side == 'BUY';
     String title = 'Buy order placed';
-    if (side == 'SELL') title = 'Sell order placed';
+    Color sideColor = const Color(0xFFDC2626);
+    if (isBuy) {
+      sideColor = const Color(0xFF16A34A);
+    } else {
+      title = 'Sell order placed';
+    }
 
     return Scaffold(
+      backgroundColor: AppColors.black,
       appBar: AppBar(
         title: const Text('Confirmation'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.gold, width: 2),
+              ),
+              child: const Icon(Icons.check, color: AppColors.gold, size: 36),
             ),
             const SizedBox(height: 16),
-            Text('$symbol  •  $qty shares'),
-            const SizedBox(height: 8),
-            Text('Price ${formatInrPaise(pricePaise)}'),
-            Text('Value ${formatInrPaise(valuePaise)}'),
-            Text(formatOrderTime(DateTime.now().millisecondsSinceEpoch)),
-            const SizedBox(height: 24),
-            FilledButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Done'),
+            Text(
+              title,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: sideColor),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.card,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.goldDim),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    symbol,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.gold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text('$qty shares', style: const TextStyle(color: AppColors.muted)),
+                  const SizedBox(height: 14),
+                  Container(height: 1, color: AppColors.line),
+                  const SizedBox(height: 14),
+                  detailRow('Price', formatInrPaise(pricePaise)),
+                  const SizedBox(height: 10),
+                  detailRow('Value', formatInrPaise(valuePaise)),
+                  const SizedBox(height: 10),
+                  detailRow('Time', formatOrderTime(DateTime.now().millisecondsSinceEpoch)),
+                ],
+              ),
+            ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Done'),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget detailRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(color: AppColors.muted)),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+      ],
     );
   }
 }

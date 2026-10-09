@@ -27,9 +27,7 @@ class _HoldingsPageState extends State<HoldingsPage> {
 
     return Scaffold(
       backgroundColor: AppColors.black,
-      appBar: AppBar(
-        title: const Text('Holdings'),
-      ),
+      appBar: AppBar(title: const Text('Holdings')),
       body: Column(
         children: [
           HoldingsSummary(holdingsKey: holdingsKey),
@@ -121,7 +119,9 @@ class _HoldingsSummaryState extends State<HoldingsSummary> {
 
   void listen() {
     for (HoldingModel item in Portfolio.instance.holdings) {
-      ValueNotifier<StockQuote> notifier = MarketFeed.instance.quoteOf(item.symbol);
+      ValueNotifier<StockQuote> notifier = MarketFeed.instance.quoteOf(
+        item.symbol,
+      );
       notifier.addListener(onTick);
       notifiers.add(notifier);
     }
@@ -161,23 +161,68 @@ class _HoldingsSummaryState extends State<HoldingsSummary> {
     if (pnl >= 0) color = const Color(0xFF16A34A);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Total invested', style: TextStyle(color: AppColors.muted)),
-          Text(
-            formatInrPaise(invested),
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 6),
-          Text('Current value  ${formatInrPaise(current)}'),
-          Text(
-            'Total P&L  ${formatPnlLine(pnl, invested)}',
-            style: TextStyle(color: color, fontWeight: FontWeight.bold),
-          ),
-        ],
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.goldDim),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Total P&L',
+              style: TextStyle(
+                color: AppColors.gold,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              formatPnlLine(pnl, invested),
+              style: TextStyle(
+                color: color,
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Container(height: 1, color: AppColors.line),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: summaryItem('Invested', formatInrPaise(invested)),
+                ),
+                Expanded(
+                  child: summaryItem('Current value', formatInrPaise(current)),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget summaryItem(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.muted, fontSize: 12),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 }
@@ -186,11 +231,7 @@ class HoldingsList extends StatefulWidget {
   final String sort;
   final VoidCallback onChanged;
 
-  const HoldingsList({
-    super.key,
-    required this.sort,
-    required this.onChanged,
-  });
+  const HoldingsList({super.key, required this.sort, required this.onChanged});
 
   @override
   State<HoldingsList> createState() => _HoldingsListState();
@@ -215,7 +256,9 @@ class _HoldingsListState extends State<HoldingsList> {
 
   void listen() {
     for (HoldingModel item in Portfolio.instance.holdings) {
-      ValueNotifier<StockQuote> notifier = MarketFeed.instance.quoteOf(item.symbol);
+      ValueNotifier<StockQuote> notifier = MarketFeed.instance.quoteOf(
+        item.symbol,
+      );
       notifier.addListener(onTick);
       notifiers.add(notifier);
     }
@@ -292,11 +335,7 @@ class HoldingRow extends StatefulWidget {
   final String symbol;
   final VoidCallback onChanged;
 
-  const HoldingRow({
-    super.key,
-    required this.symbol,
-    required this.onChanged,
-  });
+  const HoldingRow({super.key, required this.symbol, required this.onChanged});
 
   @override
   State<HoldingRow> createState() => _HoldingRowState();
@@ -360,7 +399,10 @@ class _HoldingRowState extends State<HoldingRow> {
                   Expanded(
                     child: Text(
                       holding.symbol,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Text(
@@ -370,7 +412,9 @@ class _HoldingRowState extends State<HoldingRow> {
                 ],
               ),
               const SizedBox(height: 4),
-              Text('${holding.qty} shares    Avg ${formatInrPaise(holding.avgPaise)}'),
+              Text(
+                '${holding.qty} shares    Avg ${formatInrPaise(holding.avgPaise)}',
+              ),
               Text(
                 'LTP ${formatInrPaise(quote.ltpPaise)}    Value ${formatInrPaise(current)}',
               ),

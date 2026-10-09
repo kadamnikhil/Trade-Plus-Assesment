@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marketupdates/Constant/colors.dart';
 import 'package:marketupdates/Constant/stocks.dart';
+import 'package:marketupdates/Screens/Ticket/ticket.dart';
 import 'package:marketupdates/Services/market_feed.dart';
 
 class MarketPage extends StatelessWidget {
@@ -76,6 +77,15 @@ class _MarketRowState extends State<MarketRow> {
     super.dispose();
   }
 
+  void openTicket(String side) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TicketPage(symbol: widget.symbol, side: side),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     AppStock? stock = findStock(widget.symbol);
@@ -92,44 +102,60 @@ class _MarketRowState extends State<MarketRow> {
       color: Color.alphaBlend(flash, AppColors.card),
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+        child: Column(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.symbol,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    stockName,
-                    style: const TextStyle(fontSize: 12, color: AppColors.muted),
-                  ),
-                ],
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            Row(
               children: [
-                Text(
-                  formatInrPaise(quote.ltpPaise),
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.symbol,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        stockName,
+                        style: const TextStyle(fontSize: 12, color: AppColors.muted),
+                      ),
+                    ],
+                  ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(
-                      quote.isUp ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                      color: color,
-                      size: 18,
-                    ),
                     Text(
-                      formatChangeLine(quote.ltpPaise, quote.prevClosePaise),
-                      style: TextStyle(fontSize: 12, color: color),
+                      formatInrPaise(quote.ltpPaise),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          quote.isUp ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                          color: color,
+                          size: 18,
+                        ),
+                        Text(
+                          formatChangeLine(quote.ltpPaise, quote.prevClosePaise),
+                          style: TextStyle(fontSize: 12, color: color),
+                        ),
+                      ],
                     ),
                   ],
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () => openTicket('BUY'),
+                  child: const Text('Buy'),
+                ),
+                TextButton(
+                  onPressed: () => openTicket('SELL'),
+                  child: const Text('Sell'),
                 ),
               ],
             ),
