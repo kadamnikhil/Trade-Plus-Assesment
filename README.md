@@ -1,35 +1,72 @@
 # TradePlus
 
-A Flutter trading app with a watchlist, live prices, buy/sell orders, and holdings. Prices come from a mock feed. Nothing needs a backend.
+A Flutter trading app featuring watchlists, simulated live stock prices, buy/sell orders, and portfolio holdings. Stock prices are generated using a mock market feed. No backend is required.
 
 ## Run
 
-Needs Flutter stable.
+Prerequisites: Flutter SDK (stable channel).
 
 ```bash
 flutter pub get
 flutter run
 ```
 
-You start with ₹5,00,000 cash. Watchlists, cash, holdings, and orders are saved on the device.
+The app starts with ₹5,00,000 in virtual cash. Watchlists, cash balance, holdings, and order history are saved locally on the device.
 
-To make prices move faster, change `tickInterval` in `lib/Services/market_feed.dart`. It is `500` ms now. `20` ms is about 50 ticks per second.
+To change how frequently stock prices update, modify the `tickInterval` value in `lib/Services/market_feed.dart`.
 
-## Folder structure
+- Default: `500` milliseconds
+- `20` milliseconds: approximately 50 updates per second
+
+## Features
+
+- Create and manage watchlists.
+- Add, remove, and reorder stocks.
+- View simulated live prices for 10 stocks.
+- Place virtual buy and sell orders.
+- View portfolio holdings and live profit/loss (P&L).
+- Sort holdings.
+- View saved order history.
+- Persist cash balance, watchlists, holdings, and orders locally.
+- Configure the simulated market price update interval.
+
+## Folder Structure
 
 ```text
 lib/
-  main.dart                  starts the app and the price feed
-  Constant/stocks.dart       the 10 stocks and rupee formatting
-  Model/                     watchlist, holding, and order data
-  Services/
-    market_feed.dart         one live price source for the whole app
-    portfolio.dart           saved cash, holdings, and orders
-  Screens/
-    Watchlist/               create lists, add, remove, and reorder stocks
-    Market/                  live prices for all 10 stocks
-    Ticket/                  buy/sell form and confirmation
-    Holdings/                holdings with live P&L and sorting
-    Orders/                  saved order history
-  Designs/                   static sample screens only
+├── main.dart
+├── Constant/
+│   └── stocks.dart
+├── Model/
+├── Services/
+│   ├── market_feed.dart
+│   └── portfolio.dart
+├── Screens/
+│   ├── Watchlist/
+│   ├── Market/
+│   ├── Ticket/
+│   ├── Holdings/
+│   └── Orders/
+└── Designs/
 ```
+
+## Folder Description
+
+- `main.dart` — Starts the application and initializes the market feed.
+- `Constant/stocks.dart` — Contains stock data and rupee formatting.
+- `Model/` — Contains watchlist, holding, and order models.
+- `Services/market_feed.dart` — Provides a shared simulated stock price feed.
+- `Services/portfolio.dart` — Manages local cash, holdings, and order persistence.
+- `Screens/Watchlist/` — Watchlist creation and management.
+- `Screens/Market/` — Displays stock prices for all 10 stocks.
+- `Screens/Ticket/` — Buy/sell form and order confirmation.
+- `Screens/Holdings/` — Displays holdings, live P&L, and sorting.
+- `Screens/Orders/` — Displays saved order history.
+- `Designs/` — Contains static sample screens for reference.
+
+## Notes
+
+- No backend integration is required.
+- Stock prices are simulated and do not represent actual market prices.
+- All orders are virtual; no real trades are executed.
+- Application data is stored locally on the device.
